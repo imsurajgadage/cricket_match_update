@@ -1,25 +1,50 @@
-import logo from './logo.svg';
+import React,{useState, useEffect} from 'react';
 import './App.css';
+import MyCard from './components/MyCard';
+import NavBar from './components/NavBar';
+import { getMatches } from './api';
+import { Grid } from '@material-ui/core';
+
 
 function App() {
+
+  const [matches, setMatches] = useState([]);
+
+  useEffect(()=>{
+      const fetchAPI = async ()=>{
+          const data = await getMatches()
+          setMatches(data.matches)
+      }
+      fetchAPI();
+  },[])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <NavBar />
+    <Grid container>
+      <Grid sm="2"></Grid>
+      <Grid sm="8">
+      {
+      matches.map((match)=>(
+        <>
+        {match.type === "Twenty20" ? (
+           <MyCard key={match.unique_id} match={match} />
+        ) : (
+            null
+        )}
+        </>
+      ))
+    }
+      </Grid> 
+    </Grid>
+    
+    </>
   );
 }
 
 export default App;
+
+/*
+https://cricapi.com/api/matches?apikey=yHyfCl9uAVbzWSMn1AiP2L32dLO2
+*/
